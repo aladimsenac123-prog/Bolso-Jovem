@@ -1,7 +1,6 @@
 package com.bolsojovem.pixcontrol.ui.theme
 
 import android.app.Activity
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -11,38 +10,69 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-private val DarkColorScheme = darkColorScheme(
-    primary = PixMint,
+/**
+ * Google Stitch Theme Engine for Bolso Jovem (PixControl)
+ */
+private val StitchDarkColorScheme = darkColorScheme(
+    primary = StitchPrimaryContainer,
     onPrimary = DarkBackground,
-    primaryContainer = PixMintDark,
-    onPrimaryContainer = PixMint,
-    secondary = FinTechCobalt,
+    primaryContainer = StitchPrimary,
+    onPrimaryContainer = StitchPrimaryFixed,
+    inversePrimary = StitchInversePrimary,
+    secondary = StitchSecondaryContainer,
+    onSecondary = DarkBackground,
+    secondaryContainer = StitchSecondary,
+    onSecondaryContainer = StitchSecondaryFixed,
+    tertiary = AlertCrimson,
+    onTertiary = StitchOnTertiary,
+    tertiaryContainer = StitchTertiary,
+    onTertiaryContainer = StitchTertiaryContainer,
     background = DarkBackground,
-    surface = DarkSurfaceCard,
     onBackground = TextPrimaryDark,
+    surface = DarkSurfaceCard,
     onSurface = TextPrimaryDark,
-    error = AlertCrimson
+    surfaceVariant = DarkSurfaceInput,
+    onSurfaceVariant = TextSecondaryDark,
+    outline = DarkBorderHairline,
+    error = AlertCrimson,
+    onError = StitchOnTertiary,
+    errorContainer = StitchTertiaryContainer,
+    onErrorContainer = StitchOnTertiaryContainer
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = PixMintDark,
-    onPrimary = LightBackground,
-    primaryContainer = PixMint,
-    onPrimaryContainer = TextPrimaryLight,
-    secondary = FinTechCobalt,
+private val StitchLightColorScheme = lightColorScheme(
+    primary = StitchPrimary,
+    onPrimary = StitchOnPrimary,
+    primaryContainer = StitchPrimaryContainer,
+    onPrimaryContainer = StitchOnPrimaryContainer,
+    inversePrimary = StitchInversePrimary,
+    secondary = StitchSecondary,
+    onSecondary = StitchOnSecondary,
+    secondaryContainer = StitchSecondaryContainer,
+    onSecondaryContainer = StitchOnSecondaryContainer,
+    tertiary = StitchTertiary,
+    onTertiary = StitchOnTertiary,
+    tertiaryContainer = StitchTertiaryContainer,
+    onTertiaryContainer = StitchOnTertiaryContainer,
     background = LightBackground,
-    surface = LightSurfaceCard,
     onBackground = TextPrimaryLight,
+    surface = LightSurfaceCard,
     onSurface = TextPrimaryLight,
-    error = AlertCrimson
+    surfaceVariant = LightSurfaceContainer,
+    onSurfaceVariant = TextSecondaryLight,
+    outline = LightBorderHairline,
+    error = AlertCrimson,
+    onError = StitchOnTertiary,
+    errorContainer = StitchTertiaryContainer,
+    onErrorContainer = StitchOnTertiaryContainer
 )
 
 @Composable
 fun BolsoJovemTheme(
-    darkTheme: Boolean = true, // Padrão Neobank Dark Modern
+    darkTheme: Boolean = true, // Neobank Dark Modern por padrão
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val colorScheme = if (darkTheme) StitchDarkColorScheme else StitchLightColorScheme
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
