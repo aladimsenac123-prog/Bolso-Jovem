@@ -12,16 +12,6 @@ enum class TransactionType {
     GOAL_DEPOSIT
 }
 
-enum class ExpenseCategory(val label: String, val iconName: String) {
-    FOOD("Alimentação", "fastfood"),
-    TRANSPORT("Transporte", "directions_bus"),
-    EDUCATION("Educação", "school"),
-    LEISURE("Lazer", "sports_esports"),
-    SHOPPING("Compras", "shopping_bag"),
-    PIX_TRANSFER("Transferência Pix", "bolt"),
-    SAVINGS("Cofrinho", "savings")
-}
-
 @Immutable
 data class Transaction(
     val id: String = UUID.randomUUID().toString(),
@@ -32,4 +22,7 @@ data class Transaction(
     val timestamp: LocalDateTime = LocalDateTime.now(),
     val pixKey: String? = null,
     val note: String? = null
-)
+) {
+    val formattedAmount: String
+        get() = String.format("R$ %.2f", amount).replace(".", ",")
+}
