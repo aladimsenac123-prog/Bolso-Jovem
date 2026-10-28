@@ -43,9 +43,12 @@ import com.bolsojovem.pixcontrol.ui.theme.TextSecondaryDark
 import com.bolsojovem.pixcontrol.viewmodel.PixControlViewModel
 import kotlinx.coroutines.launch
 
+import com.bolsojovem.pixcontrol.ui.components.NavItem
+
 @Composable
 fun BolsoJovemDashboardScreen(
     viewModel: PixControlViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    onNavigateTab: (NavItem) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -60,7 +63,10 @@ fun BolsoJovemDashboardScreen(
             TopBar()
         },
         bottomBar = {
-            CupertinoTabBar()
+            CupertinoTabBar(
+                selectedItem = NavItem.Home,
+                onItemSelected = onNavigateTab
+            )
         }
     ) { innerPadding ->
         LazyColumn(
