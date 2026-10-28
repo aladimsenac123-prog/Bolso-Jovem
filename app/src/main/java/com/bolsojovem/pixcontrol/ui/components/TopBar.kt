@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.statusBarsPadding
 import com.bolsojovem.pixcontrol.ui.theme.DarkSurfaceInput
 import com.bolsojovem.pixcontrol.ui.theme.PixMint
 import com.bolsojovem.pixcontrol.ui.theme.TextPrimaryDark
@@ -40,7 +41,8 @@ fun TopBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 14.dp),
+            .statusBarsPadding()
+            .padding(horizontal = 20.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
