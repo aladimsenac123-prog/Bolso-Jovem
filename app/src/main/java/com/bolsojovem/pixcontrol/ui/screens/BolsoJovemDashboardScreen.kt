@@ -52,6 +52,11 @@ fun BolsoJovemDashboardScreen(
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    var filterCategory by remember { mutableStateOf<ExpenseCategory?>(null) }
+    val filteredTransactions = remember(uiState.transactions, filterCategory) {
+        if (filterCategory == null) uiState.transactions
+        else uiState.transactions.filter { it.category == filterCategory }
+    }
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
