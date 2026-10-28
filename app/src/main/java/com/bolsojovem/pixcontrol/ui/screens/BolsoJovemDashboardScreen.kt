@@ -32,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bolsojovem.pixcontrol.ui.components.CupertinoTabBar
+import com.bolsojovem.pixcontrol.ui.components.NavItem
 import com.bolsojovem.pixcontrol.ui.components.HeroSummaryCard
 import com.bolsojovem.pixcontrol.ui.components.QuickExpenseForm
 import com.bolsojovem.pixcontrol.ui.components.TopBar
