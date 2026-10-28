@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Bolso Jovem</string>
+    <string name="tagline">PixControl — Microfinanças Inteligentes</string>
+    <string name="currency_symbol">R$</string>
+</resources>
