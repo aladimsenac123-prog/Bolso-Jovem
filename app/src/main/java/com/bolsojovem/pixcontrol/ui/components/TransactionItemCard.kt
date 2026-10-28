@@ -53,9 +53,9 @@ fun TransactionItemCard(
         ExpenseCategory.FOOD -> Icons.Default.Fastfood
         ExpenseCategory.TRANSPORT -> Icons.Default.LocalAtm
         ExpenseCategory.LEISURE -> Icons.Default.SportsEsports
-        ExpenseCategory.STUDIES -> Icons.Default.School
+        ExpenseCategory.STUDIES, ExpenseCategory.EDUCATION -> Icons.Default.School
         ExpenseCategory.SERVICES -> Icons.Default.PhoneAndroid
-        ExpenseCategory.OTHER -> Icons.Default.LocalAtm
+        else -> Icons.Default.LocalAtm
     }
 
     Row(
