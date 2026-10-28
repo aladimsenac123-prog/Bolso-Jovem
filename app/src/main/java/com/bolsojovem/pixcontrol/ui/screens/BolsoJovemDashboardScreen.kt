@@ -43,7 +43,15 @@ import com.bolsojovem.pixcontrol.ui.theme.TextSecondaryDark
 import com.bolsojovem.pixcontrol.viewmodel.PixControlViewModel
 import kotlinx.coroutines.launch
 
-import com.bolsojovem.pixcontrol.ui.components.NavItem
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.border
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import com.bolsojovem.pixcontrol.data.model.ExpenseCategory
+import com.bolsojovem.pixcontrol.ui.theme.DarkBorderHairline
+import com.bolsojovem.pixcontrol.ui.theme.DarkSurfaceInput
 
 @Composable
 fun BolsoJovemDashboardScreen(
