@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -27,40 +28,53 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.layout.statusBarsPadding
-import com.bolsojovem.pixcontrol.ui.theme.DarkSurfaceInput
+import com.bolsojovem.pixcontrol.ui.theme.AlertCrimson
 import com.bolsojovem.pixcontrol.ui.theme.PixMint
-import com.bolsojovem.pixcontrol.ui.theme.TextPrimaryDark
-import com.bolsojovem.pixcontrol.ui.theme.TextSecondaryDark
+import com.bolsojovem.pixcontrol.ui.theme.StitchPrimary
+import com.bolsojovem.pixcontrol.ui.theme.StitchPrimaryContainer
 
 @Composable
 fun TopBar(
     userName: String = "Carlos Dev",
+    onNotificationsClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    val isDark = MaterialTheme.colorScheme.background.red < 0.5f
+
     Row(
         modifier = modifier
             .fillMaxWidth()
             .statusBarsPadding()
-            .padding(horizontal = 20.dp, vertical = 10.dp),
+            .padding(horizontal = 16.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // User profile and brand tag
+        // Leading: Profile Avatar with Pix Live Indicator Ring
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(44.dp)
-                    .clip(CircleShape)
-                    .background(DarkSurfaceInput)
-                    .border(2.dp, PixMint, CircleShape)
-            ) {
-                Text(
-                    text = "CD",
-                    fontWeight = FontWeight.Bold,
-                    color = PixMint,
-                    fontSize = 15.sp
+            Box(modifier = Modifier.size(44.dp)) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(42.dp)
+                        .clip(CircleShape)
+                        .background(if (isDark) Color(0xFF1E293B) else Color(0xFFE2E7FF))
+                        .border(2.dp, StitchPrimaryContainer, CircleShape)
+                ) {
+                    Text(
+                        text = "CD",
+                        fontWeight = FontWeight.ExtraBold,
+                        color = if (isDark) StitchPrimaryContainer else StitchPrimary,
+                        fontSize = 15.sp
+                    )
+                }
+                // Live Dot
+                Box(
+                    modifier = Modifier
+                        .size(12.dp)
+                        .clip(CircleShape)
+                        .background(StitchPrimaryContainer)
+                        .border(2.dp, MaterialTheme.colorScheme.background, CircleShape)
+                        .align(Alignment.BottomEnd)
                 )
             }
 
@@ -71,54 +85,70 @@ fun TopBar(
                     Text(
                         text = "Bolso Jovem",
                         style = MaterialTheme.typography.titleLarge,
-                        color = TextPrimaryDark,
-                        fontWeight = FontWeight.Bold
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontWeight = FontWeight.ExtraBold,
+                        letterSpacing = (-0.5).sp
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Box(
                         modifier = Modifier
                             .clip(CircleShape)
-                            .background(PixMint.copy(alpha = 0.2f))
+                            .background(StitchPrimaryContainer.copy(alpha = 0.22f))
                             .padding(horizontal = 6.dp, vertical = 2.dp)
                     ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Default.Bolt,
-                                contentDescription = "Pix",
-                                tint = PixMint,
-                                modifier = Modifier.size(12.dp)
-                            )
-                            Spacer(modifier = Modifier.width(2.dp))
-                            Text(
-                                text = "PIX",
-                                color = PixMint,
-                                fontSize = 9.sp,
-                                fontWeight = FontWeight.ExtraBold
-                            )
-                        }
+                        Text(
+                            text = "PIX LIVE",
+                            color = if (isDark) StitchPrimaryContainer else StitchPrimary,
+                            fontSize = 9.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            letterSpacing = 0.5.sp
+                        )
                     }
                 }
-                Text(
-                    text = "Olá, $userName • Chave Pix Ativa",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = TextSecondaryDark
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(6.dp)
+                            .clip(CircleShape)
+                            .background(StitchPrimaryContainer)
+                    )
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Text(
+                        text = "Chave Pix Ativa • $userName",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 12.sp
+                    )
+                }
             }
         }
 
-        // Action icon
-        IconButton(
-            onClick = { /* Notificações */ },
+        // Trailing: Notification Button with Red Alert Badge
+        Box(
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .background(DarkSurfaceInput)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
         ) {
-            Icon(
-                imageVector = Icons.Default.Notifications,
-                contentDescription = "Notificações",
-                tint = TextPrimaryDark,
-                modifier = Modifier.size(20.dp)
+            IconButton(
+                onClick = onNotificationsClick,
+                modifier = Modifier.size(40.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Notifications,
+                    contentDescription = "Notificações",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+            // Red Dot
+            Box(
+                modifier = Modifier
+                    .size(8.dp)
+                    .clip(CircleShape)
+                    .background(AlertCrimson)
+                    .align(Alignment.TopEnd)
+                    .padding(2.dp)
             )
         }
     }
