@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.bolsojovem.pixcontrol.data.model.AccountSummary
 import com.bolsojovem.pixcontrol.data.model.ExpenseCategory
 import com.bolsojovem.pixcontrol.data.model.Transaction
-import com.bolsojovem.pixcontrol.data.repository.InMemoryPixControlRepository
 import com.bolsojovem.pixcontrol.data.repository.PixControlRepository
+import com.bolsojovem.pixcontrol.data.repository.PixControlRepositoryImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,7 +24,7 @@ data class DashboardUiState(
 )
 
 class PixControlViewModel(
-    private val repository: PixControlRepository = InMemoryPixControlRepository()
+    private val repository: PixControlRepository = PixControlRepositoryImpl()
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DashboardUiState())
@@ -33,9 +33,14 @@ class PixControlViewModel(
     init {
         viewModelScope.launch {
             combine(
-                repository.getAccountSummary(),
-                repository.getTransactions()
-            ) { summary, transactions ->
+                repository.balanceFlow,
+                repository.transactionsFlow
+            ) { balance, transactions ->
+                val summary = AccountSummary(
+                    dailyBudgetLimit = balance.dailyLimit,
+                    totalSpentToday = balance.dailySpent,
+                    transactionCount = transactions.size
+                )
                 Pair(summary, transactions)
             }.collect { (summary, transactions) ->
                 _uiState.value = _uiState.value.copy(
@@ -54,7 +59,6 @@ class PixControlViewModel(
     }
 
     fun onAmountChanged(newVal: String) {
-        // Filtrar apenas números, vírgula ou ponto
         val filtered = newVal.filter { it.isDigit() || it == ',' || it == '.' }
         _uiState.value = _uiState.value.copy(
             inputAmount = filtered,
@@ -86,7 +90,7 @@ class PixControlViewModel(
         }
 
         viewModelScope.launch {
-            repository.addTransaction(
+            repository.addExpense(
                 title = desc,
                 amount = amount,
                 category = _uiState.value.selectedCategory
