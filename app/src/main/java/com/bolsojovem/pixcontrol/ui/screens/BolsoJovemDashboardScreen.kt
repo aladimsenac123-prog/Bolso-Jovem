@@ -118,6 +118,11 @@ fun BolsoJovemDashboardScreen(
                 )
             }
 
+            // 2.1 Banner Dica Pix & Gamificação (Fiel ao Google Stitch)
+            item(key = "pix_tip_banner") {
+                com.bolsojovem.pixcontrol.ui.components.StitchPixTipBanner()
+            }
+
             // 3. Cabeçalho da Seção Extrato de Hoje
             item(key = "feed_header") {
                 Column(

@@ -21,7 +21,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            BolsoJovemTheme(darkTheme = true) {
+            // Fiel ao design oficial do Google Stitch (Light Theme Neobank)
+            BolsoJovemTheme(darkTheme = false) {
                 var currentTab by remember { mutableStateOf<NavItem>(NavItem.Home) }
                 val viewModel: PixControlViewModel = viewModel()
 
