@@ -1,12 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Google Stitch Official Palette for Bolso Jovem (PixControl) -->
 <resources>
-    <color name="pix_mint">#00D09E</color>
-    <color name="pix_mint_dark">#006C50</color>
-    <color name="obsidian_background">#0B0F19</color>
-    <color name="card_surface_dark">#161F30</color>
-    <color name="alert_crimson">#EF4444</color>
-    <color name="safe_emerald">#10B981</color>
-    <color name="fintech_cobalt">#0284C7</color>
-    <color name="text_primary">#F8FAFC</color>
-    <color name="text_secondary">#94A3B8</color>
+    <!-- Primary Brand: Pix Mint Green -->
+    <color name="stitch_primary">#006C50</color>
+    <color name="stitch_primary_container">#00D09E</color>
+    <color name="stitch_on_primary">#FFFFFF</color>
+    <color name="stitch_on_primary_container">#00533D</color>
+    <color name="stitch_primary_fixed">#59FDC7</color>
+    <color name="stitch_primary_fixed_dim">#2FE0AC</color>
+
+    <!-- Secondary: FinTech Cobalt Sky -->
+    <color name="stitch_secondary">#006398</color>
+    <color name="stitch_secondary_container">#5BB8FE</color>
+    <color name="stitch_on_secondary">#FFFFFF</color>
+    <color name="stitch_on_secondary_container">#00476E</color>
+
+    <!-- Tertiary: Budget Alert Crimson -->
+    <color name="stitch_tertiary">#B91A24</color>
+    <color name="stitch_tertiary_container">#FF9D96</color>
+    <color name="stitch_on_tertiary">#FFFFFF</color>
+    <color name="stitch_on_tertiary_container">#960014</color>
+
+    <!-- Safe Budget Accent -->
+    <color name="stitch_safe_emerald">#10B981</color>
+    <color name="stitch_safe_emerald_container">#D1FAE5</color>
+
+    <!-- Dark Neobank Canvas -->
+    <color name="stitch_dark_background">#0B0F19</color>
+    <color name="stitch_dark_surface_card">#161F30</color>
+    <color name="stitch_dark_surface_input">#1E293B</color>
+
+    <!-- Light Canvas -->
+    <color name="stitch_light_surface">#FAF8FF</color>
+    <color name="stitch_light_surface_container">#EAEDFF</color>
+    <color name="stitch_light_surface_container_high">#E2E7FF</color>
+
+    <!-- Typography -->
+    <color name="stitch_text_primary_dark">#F8FAFC</color>
+    <color name="stitch_text_secondary_dark">#94A3B8</color>
+    <color name="stitch_text_primary_light">#131B2E</color>
+    <color name="stitch_text_secondary_light">#475569</color>
 </resources>
