@@ -1,0 +1,261 @@
+/* ================================================================ catalog shell
+   Routing and layout only. The navbar is the Overview's own `nav` (grotesk.css): in Overview it is
+   the page's transparent, difference-blended bar over the live frame; in Components it gets an ink
+   glass backing so it stays legible over any specimen. Every specimen keeps the page's markup and
+   grotesk.css; .ds-ctx only takes a section's own box out of the way (height, padding, sticky)
+   while keeping its ground, color and scoped type rules. */
+:root { --ds-navh: 58px; --ds-scrim: rgba(244,241,234,.9); --ds-meta: rgba(22,21,19,.74); }
+html, body { height: 100%; }
+body { overflow: hidden; }
+/* the page's grain (body::after) is drawn by the Overview frame itself; the catalog adds it back
+   over the Components view only, so it is never doubled */
+body::after { display: none; }
+body.is-components::after { display: block; }
+#overview-frame { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; display: block; z-index: 0; background: var(--bone); }
+
+#ds-nav .links a.is-active::after { width: 100%; }
+#ds-nav .links a[aria-disabled="true"] { opacity: .4; pointer-events: none; }
+/* the page drops its plain links under 761px (only the bordered CTA stays); the catalog keeps both views */
+#ds-nav .links a { display: inline-block; }
+body.is-components #ds-nav { mix-blend-mode: normal; color: var(--bone); background: rgba(22,21,19,.94);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-bottom: 1px solid var(--hair-bone); }
+
+/* ------------------------------------------------------------ components view */
+#view-components { position: fixed; top: var(--ds-navh); left: 0; right: 0; bottom: 0; z-index: 10; display: none; }
+body.is-components #view-components { display: grid; grid-template-columns: 244px minmax(0, 1fr); }
+body.is-components #overview-frame { pointer-events: none; }   /* the live hero stage, parked behind */
+/* one bone scrim (the page's own paper) holds the specimens off the live stage; it lifts while
+   Backgrounds is in view, where a window specimen looks straight through to the stage */
+#view-components::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: var(--ds-scrim);
+  transition: opacity .6s var(--ease); }
+body.ds-scene-clear #view-components::before { opacity: 0; }
+body.ds-scene-clear .ds-window { box-shadow: 0 0 0 200vmax var(--ds-scrim); }
+
+/* sidebar: its own ink glass (the page's ink sections, bone mono type), legible over any stage */
+#ds-side { overflow-y: auto; padding: 28px 14px 40px 18px; display: flex; flex-direction: column; gap: 1px;
+  background: rgba(22,21,19,.95); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+  border-right: 1px solid var(--hair-bone); color: var(--bone); }
+#ds-side .ds-lbl { margin: 0 0 16px 10px; font-family: var(--mono); font-size: 10px; letter-spacing: .2em; text-transform: uppercase;
+  color: rgba(244,241,234,.55); }
+#ds-side a { position: relative; display: flex; align-items: baseline; gap: 12px; padding: 9px 10px; font-family: var(--mono);
+  font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: rgba(244,241,234,.8); transition: background .25s var(--ease), color .25s var(--ease); }
+#ds-side a b { font-weight: 500; font-size: 10px; letter-spacing: .1em; color: rgba(244,241,234,.5); font-variant-numeric: tabular-nums; }
+#ds-side a:hover { color: var(--bone); background: rgba(244,241,234,.06); }
+#ds-side a.is-current { color: var(--bone); background: rgba(244,241,234,.1); }
+#ds-side a.is-current::before { content: ""; position: absolute; left: 0; top: 8px; bottom: 8px; width: 2px; background: var(--verm); }
+#ds-side a.is-current b { color: var(--verm); }
+
+#ds-main { position: relative; overflow-y: auto; overflow-x: hidden; isolation: isolate; padding: 56px clamp(20px, 4vw, 72px) 160px;
+  color: var(--ink); }
+#ds-main > * { max-width: 1240px; }
+.ds-group { padding-bottom: 120px; }
+.ds-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 10px 24px;
+  border-bottom: 1px solid var(--hair-ink); padding-bottom: 18px; margin-bottom: 40px; }
+.ds-head h2 { font-weight: 900; font-size: clamp(30px, 3.6vw, 52px); letter-spacing: -.02em; line-height: 1; }
+.ds-head .mono, .ds-sub { color: rgba(22,21,19,.66); }
+.ds-sub { display: block; margin: 50px 0 18px; }
+.ds-head + .ds-sub { margin-top: 0; }
+.ds-spec { margin: 0 0 64px; position: relative; }
+.ds-spec:last-child { margin-bottom: 0; }
+.ds-spec > h3 { margin: 0 0 16px; font-weight: 700; font-size: 20px; letter-spacing: -.01em; }
+.ds-meta { display: block; margin-top: 14px; font: 400 11.5px/1.6 var(--mono); color: var(--ds-meta); overflow-wrap: anywhere; }
+.ds-meta b { font-weight: 500; color: var(--ink); }
+.ds-note { margin-top: 8px; max-width: 80ch; font-size: 13.5px; line-height: 1.65; color: rgba(22,21,19,.78); }
+.ds-note code { font: 400 11.5px/1.6 var(--mono); }
+.ds-row { display: flex; flex-wrap: wrap; align-items: center; gap: 22px 30px; }
+.ds-cell { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; min-width: 0; }
+.ds-cell > small { font-family: var(--mono); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: rgba(22,21,19,.62); }
+.ds-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px; }
+.ds-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 26px; }
+.ds-btn { font-family: var(--mono); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; padding: 7px 12px;
+  border: 1px solid var(--hair-ink); color: var(--ink); background: var(--bone); transition: .25s var(--ease); }
+.ds-btn:hover { background: var(--ink); color: var(--bone); border-color: var(--ink); }
+.ds-ctrl { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+
+/* specimen contexts: a section keeps its ground/colour/scoped rules, loses its page box */
+.ds-ctx { min-height: 0 !important; height: auto !important; padding: 0 !important; position: relative !important; top: auto !important;
+  -webkit-mask-image: none !important; mask-image: none !important; }
+.ds-ctx.ds-pad { padding: 30px 32px !important; }
+.ds-ctx.ds-padx { padding: 56px 44px !important; }
+.ds-ctx.ds-clip { overflow: hidden !important; }
+/* hairline edge drawn above the specimen's own ground, so bone-on-bone boxes keep a boundary */
+.ds-edge::after { content: ""; position: absolute; inset: 0; z-index: 5; pointer-events: none; box-shadow: inset 0 0 0 1px var(--hair-ink); }
+
+/* ------------------------------------------------------------ components: formats */
+/* typography: role | live sample | declared size */
+.ds-type { display: grid; grid-template-columns: 180px minmax(0, 1fr) 170px; gap: 28px; align-items: center; padding: 26px 0;
+  border-top: 1px solid var(--hair-ink); }
+.ds-type:last-child { border-bottom: 1px solid var(--hair-ink); }
+.ds-head + .ds-type { border-top: 0; }
+.ds-type .role { font-size: 14px; font-weight: 700; letter-spacing: -.01em; color: var(--ink); }
+.ds-type .face { margin-top: 4px; font-size: 12px; line-height: 1.5; color: rgba(22,21,19,.74); }
+.ds-type .face code { display: block; margin-top: 6px; font: 400 11px/1.5 var(--mono); color: rgba(22,21,19,.74); overflow-wrap: anywhere; }
+.ds-type .sample { min-width: 0; overflow: hidden; }
+.ds-type .sizes { text-align: right; font: 500 11.5px/1.6 var(--mono); color: var(--ink); overflow-wrap: anywhere; }
+.ds-type .sizes i { display: block; font-style: normal; font-size: 10.5px; color: rgba(22,21,19,.62); }
+
+/* colors: live chip on its surface + label, value, token, use */
+.ds-colors { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 24px 30px; }
+.ds-sw { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 14px; align-items: start; }
+.ds-chip { position: relative; height: 84px; overflow: hidden; display: grid; place-items: center; background: var(--bone); }
+.ds-chip::after { content: ""; position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 0 1px var(--hair-ink); }
+.ds-chip.on-ink { background: var(--ink); }
+.ds-chip .aa { position: relative; font-weight: 900; font-size: 30px; line-height: 1; letter-spacing: -.035em; }
+.ds-chip .fill { position: absolute; inset: 0; }
+.ds-chip .bar { position: absolute; left: 12px; right: 12px; top: 50%; height: 0; border-top: 1px solid; }
+.ds-sw strong { display: block; font-size: 13.5px; font-weight: 700; letter-spacing: -.01em; }
+.ds-sw code { display: block; margin-top: 3px; font: 400 11px/1.45 var(--mono); color: var(--ink); overflow-wrap: anywhere; }
+.ds-sw code.tok { color: rgba(22,21,19,.62); }
+.ds-sw p { margin-top: 4px; font-size: 12px; line-height: 1.5; color: rgba(22,21,19,.74); }
+.ds-fam { margin-bottom: 30px; }
+.ds-fam > strong { display: block; margin-bottom: 12px; font-size: 14px; font-weight: 700; }
+.ds-states { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+.ds-state { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.ds-state small { font-family: var(--mono); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: rgba(22,21,19,.62); }
+.ds-state code { font: 400 11px/1.45 var(--mono); color: var(--ink); overflow-wrap: anywhere; }
+.ds-state .ds-chip { height: 72px; }
+
+/* backgrounds */
+.ds-window { position: relative; z-index: -1; height: min(56vh, 460px); }
+.ds-window .ds-flag { position: absolute; left: 16px; bottom: 14px; }
+.ds-flag { display: inline-flex; align-items: center; gap: 8px; background: var(--ink); color: var(--bone); padding: 8px 12px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; }
+.ds-flag .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--verm); }
+.ds-bgbox { position: relative; height: 460px; overflow: hidden; }
+.ds-bgspec { position: relative !important; top: auto !important; height: 100% !important; min-height: 0 !important; }
+.ds-bgspec .hero-bed { height: 44%; opacity: 1; }         /* 44vh of a 100vh stage, kept as a share of the box */
+.ds-grain { position: relative; height: 220px; overflow: hidden; }
+.ds-grain::after { content: ""; position: absolute; inset: -50%; pointer-events: none; opacity: .05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  animation: grain 7s steps(10) infinite; }
+
+/* icons */
+.ds-icons { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 34px 20px; }
+.ds-icon { display: flex; flex-direction: column; align-items: center; gap: 14px; min-width: 0; text-align: center; }
+.ds-icon .stage-i { position: relative; width: 100%; height: 72px; display: grid; place-items: center; }
+.ds-icon code { font: 400 11px/1.45 var(--mono); color: var(--ink); overflow-wrap: anywhere; }
+.ds-icon code i { display: block; font-style: normal; color: rgba(22,21,19,.62); }
+
+/* motion */
+.ds-ease { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 28px; }
+.ds-ease > div { padding: 16px 0; border-top: 1px solid var(--hair-ink); }
+.ds-ease strong { display: block; font-size: 13.5px; font-weight: 700; }
+.ds-ease code { display: block; margin-top: 4px; font: 400 11px/1.45 var(--mono); color: var(--ink); overflow-wrap: anywhere; }
+.ds-ease p { margin-top: 6px; font-size: 12px; line-height: 1.5; color: rgba(22,21,19,.74); }
+
+/* ------------------------------------------------------------ per-specimen placements
+   Source classes and sizes are kept; only the page positions (fixed/absolute/sticky, 100vh boxes)
+   are released so each piece sits in the catalog flow. */
+.ds-flat { position: relative !important; left: auto !important; right: auto !important; top: auto !important; bottom: auto !important; }
+.ds-bare { display: block !important; padding: 0 !important; border: 0 !important; }
+.ds-bare::before, .ds-bare::after { display: none !important; }
+.ds-ground { position: relative; overflow: hidden; }
+.ds-ground.bone { background: var(--bone); box-shadow: inset 0 0 0 1px var(--hair-ink); }
+.ds-ground.ink { background: var(--ink); color: var(--bone); }
+.ds-ground.deep { background: #0c0b0a; color: var(--bone); }
+.ds-ground.pad { padding: 30px 32px; }
+.ds-live { opacity: 1 !important; transform: none !important; }
+
+/* type samples scaled to the column (declared sizes on the right) */
+.ds-type .hero-title .ch { font-size: clamp(30px, 4.6vw, 70px); }
+.ds-zero { display: block; font-size: clamp(90px, 13vw, 200px); letter-spacing: -.02em; line-height: .92; font-variation-settings: 'wght' 100; }
+.ds-type .o-glyph { font-size: clamp(110px, 14vw, 220px); }
+.ds-type .foot-mark { font-size: clamp(28px, 4.4vw, 64px); }
+.ds-type .interlude { height: auto; }
+.ds-type .interlude .knock { position: relative; inset: auto; padding: 26px 0; }
+.ds-type .interlude .knock span { font-size: clamp(38px, 6.2vw, 96px); }
+.ds-type .manifesto { display: block; }
+
+/* navbar specimens: the page's fixed, difference-blended bar over its two grounds */
+.ds-navbox { position: relative; height: 120px; overflow: hidden; }
+.ds-navbox.ink { background: var(--ink); }
+.ds-navbox.bone { background: var(--bone); box-shadow: inset 0 0 0 1px var(--hair-ink); }
+.ds-navbox.split { background: linear-gradient(90deg, var(--bone) 0 55%, var(--ink) 55% 100%); }
+
+/* hero composition, at a catalog height (the page's stage is 100vh) */
+.ds-herobox { position: relative; height: 640px; overflow: hidden; container-type: inline-size; }
+.ds-herobox .hero { height: 100%; }
+.ds-herobox .hero-title .ch { font-size: clamp(30px, 6.8cqi, 96px); }
+.ds-herobox .hero-meta { bottom: 41%; }
+.ds-herobox .hero-bed { height: 44%; }
+.ds-herobox .veil { position: absolute; }
+.ds-herobox .hero-kicker, .ds-herobox .reg-cross { top: 64px; }
+
+/* scenes (the page pins these in 230-300vh sections; here they play in a fixed-height box) */
+.ds-scene { position: relative !important; top: auto !important; height: var(--ds-scene-h, 560px) !important; overflow: hidden; }
+.ds-scene .portal-eyebrow { top: 40px; }
+.ds-scene #zeroWord { font-size: clamp(90px, 16vw, 250px); }
+.ds-scrub { display: flex; align-items: center; gap: 16px; margin-top: 16px; max-width: 520px; }
+.ds-scrub label { flex: none; font-family: var(--mono); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: rgba(22,21,19,.66); }
+.ds-scrub b { flex: none; min-width: 3.5em; font: 500 11px/1 var(--mono); color: var(--ink); font-variant-numeric: tabular-nums; }
+
+/* media */
+.ds-trackbox { position: relative; overflow: hidden; background: var(--bone); box-shadow: inset 0 0 0 1px var(--hair-ink); }
+.ds-trackbox .track { height: min(74vh, 600px); }
+.ds-trackbox .frame { height: min(62vh, 500px); }
+.ds-bedbox { position: relative; height: 380px; overflow: hidden; background: var(--bone); box-shadow: inset 0 0 0 1px var(--hair-ink); }
+.ds-bedbox .hero-bed { height: 100%; opacity: 1; }
+.ds-interbox .interlude { height: min(120vh, 720px); }
+
+/* feedback */
+.ds-veilbox { position: relative; height: 300px; overflow: hidden; background: var(--bone); box-shadow: inset 0 0 0 1px var(--hair-ink); }
+.ds-veilbox .veil { position: absolute; }
+.ds-cursorbox { position: relative; height: 260px; overflow: hidden; background: var(--bone); box-shadow: inset 0 0 0 1px var(--hair-ink);
+  display: flex; align-items: center; justify-content: center; gap: 40px; flex-wrap: wrap; padding: 24px; }
+.ds-cursorbox .cursor { position: absolute; display: block; }
+.ds-icon .cursor { position: relative; transform: none; left: auto; top: auto; z-index: auto; }
+
+/* content groups */
+.ds-footbox footer { position: relative; min-height: 74vh; }
+.ds-footbox .foot-mark { font-size: clamp(34px, 7.4vw, 112px); }
+.ds-ribbonbox .ribbons { overflow: clip; }
+.ds-manibox #manifesto { height: auto; }
+.ds-manibox .ds-scene { --ds-scene-h: min(100vh, 860px); }
+
+/* data */
+.ds-glyphbox { max-width: 720px; }
+.ds-glyphbox .glyph { opacity: 1; transform: none; }
+.ds-glyphbox.ds-armed .glyph { opacity: 0; transform: scale(.8); }
+
+@media (max-width: 1439px) {
+  .ds-type { grid-template-columns: 160px minmax(0, 1fr); }
+  .ds-type .sizes { grid-column: 2; text-align: left; }
+}
+@media (max-width: 1100px) {
+  .ds-ease, .ds-3 { grid-template-columns: 1fr 1fr; }
+  .ds-icons { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 767px) {
+  body.is-components #view-components { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  #ds-side { flex-direction: row; align-items: center; gap: 2px; overflow-x: auto; overflow-y: hidden; padding: 8px 10px;
+    border-right: 0; border-bottom: 1px solid var(--hair-bone); scrollbar-width: none; }
+  #ds-side::-webkit-scrollbar { display: none; }
+  #ds-side .ds-lbl { display: none; }
+  #ds-side a { flex: 0 0 auto; padding: 8px 10px; white-space: nowrap; }
+  #ds-side a.is-current::before { left: 10px; right: 10px; top: auto; bottom: 2px; width: auto; height: 2px; }
+  #ds-main { padding: 32px 16px 120px; }
+  .ds-group { padding-bottom: 80px; }
+  .ds-type { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .ds-type .sizes { grid-column: auto; }
+  .ds-colors, .ds-2, .ds-3, .ds-ease { grid-template-columns: minmax(0, 1fr); }
+  .ds-ctx.ds-pad, .ds-ground.pad { padding: 22px 18px !important; }
+  .ds-ctx.ds-padx { padding: 30px 18px !important; }
+  .ds-window { height: 300px; }
+  .ds-bgbox { height: 320px; }
+  .ds-icons { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ds-herobox { height: 600px; }
+  .ds-herobox .hero-meta { top: 96px; bottom: auto; }
+  .ds-herobox .hero-sub { max-width: 100%; }
+  .ds-scene { --ds-scene-h: 440px; }
+  .ds-navbox { height: 96px; }
+  .ds-footbox footer { min-height: 0; }
+  .ds-manibox .ds-scene { --ds-scene-h: 640px; }
+}
+
+/* documented hover states (same values as the source :hover rules) */
+.ds-chip .foot-cta { color: var(--bone); }
+.foot-cta.ds-hover { background: var(--verm); border-color: var(--verm); color: var(--bone); }
+.presets button.ds-hover { background: var(--ink); color: var(--bone); border-color: var(--ink); }
+.lic-row.ds-hover { padding-left: 18px; }
+.lic-row.ds-hover::before { width: 100%; }
+.lic-row.ds-hover .go i { transform: translateX(8px); }
