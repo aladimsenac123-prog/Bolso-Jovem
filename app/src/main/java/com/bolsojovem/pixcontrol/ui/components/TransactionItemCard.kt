@@ -43,18 +43,28 @@ import com.bolsojovem.pixcontrol.ui.theme.PixMint
 import com.bolsojovem.pixcontrol.ui.theme.TextPrimaryDark
 import com.bolsojovem.pixcontrol.ui.theme.TextSecondaryDark
 
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import java.time.format.DateTimeFormatter
+
 @Composable
 fun TransactionItemCard(
     transaction: Transaction,
     onDelete: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val haptic = LocalHapticFeedback.current
+    val timeFormatter = remember { DateTimeFormatter.ofPattern("HH:mm") }
+    val formattedTime = remember(transaction.timestamp) {
+        transaction.timestamp.format(timeFormatter)
+    }
+
     val categoryIcon: ImageVector = when (transaction.category) {
         ExpenseCategory.FOOD -> Icons.Default.Fastfood
         ExpenseCategory.TRANSPORT -> Icons.Default.LocalAtm
         ExpenseCategory.LEISURE -> Icons.Default.SportsEsports
         ExpenseCategory.STUDIES, ExpenseCategory.EDUCATION -> Icons.Default.School
-        ExpenseCategory.SERVICES -> Icons.Default.PhoneAndroid
+        ExpenseCategory.SERVICES, ExpenseCategory.PIX_TRANSFER -> Icons.Default.PhoneAndroid
         else -> Icons.Default.LocalAtm
     }
 
@@ -94,7 +104,7 @@ fun TransactionItemCard(
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = "${transaction.category.displayName} • ${transaction.timestamp}",
+                    text = "${transaction.category.displayName} • $formattedTime",
                     style = MaterialTheme.typography.bodySmall,
                     color = TextSecondaryDark
                 )
@@ -112,7 +122,10 @@ fun TransactionItemCard(
             Spacer(modifier = Modifier.width(4.dp))
 
             IconButton(
-                onClick = { onDelete(transaction.id) },
+                onClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onDelete(transaction.id)
+                },
                 modifier = Modifier.size(32.dp)
             ) {
                 Icon(
