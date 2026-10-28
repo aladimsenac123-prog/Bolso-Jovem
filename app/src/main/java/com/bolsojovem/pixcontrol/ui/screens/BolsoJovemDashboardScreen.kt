@@ -54,6 +54,8 @@ import com.bolsojovem.pixcontrol.data.model.ExpenseCategory
 import com.bolsojovem.pixcontrol.ui.theme.DarkBorderHairline
 import com.bolsojovem.pixcontrol.ui.theme.DarkSurfaceInput
 
+import com.bolsojovem.pixcontrol.ui.components.QuickTipsBanner
+
 @Composable
 fun BolsoJovemDashboardScreen(
     viewModel: PixControlViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
@@ -71,7 +73,7 @@ fun BolsoJovemDashboardScreen(
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        containerColor = DarkBackground,
+        containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopBar()
@@ -249,9 +251,14 @@ fun BolsoJovemDashboardScreen(
                 }
             }
 
+            // 5. Quick Tips Banner (Fiel ao Google Stitch)
+            item(key = "quick_tips") {
+                QuickTipsBanner()
+            }
+
             // Espaçamento final
             item {
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(24.dp))
             }
         }
     }
