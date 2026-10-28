@@ -20,8 +20,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Bolt
+import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -43,13 +44,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bolsojovem.pixcontrol.data.model.ExpenseCategory
 import com.bolsojovem.pixcontrol.ui.theme.AlertCrimson
-import com.bolsojovem.pixcontrol.ui.theme.DarkBackground
-import com.bolsojovem.pixcontrol.ui.theme.DarkBorderHairline
-import com.bolsojovem.pixcontrol.ui.theme.DarkSurfaceCard
-import com.bolsojovem.pixcontrol.ui.theme.DarkSurfaceInput
-import com.bolsojovem.pixcontrol.ui.theme.PixMint
-import com.bolsojovem.pixcontrol.ui.theme.TextPrimaryDark
-import com.bolsojovem.pixcontrol.ui.theme.TextSecondaryDark
+import com.bolsojovem.pixcontrol.ui.theme.StitchPrimary
+import com.bolsojovem.pixcontrol.ui.theme.StitchPrimaryContainer
 
 @Composable
 fun QuickExpenseForm(
@@ -64,84 +60,141 @@ fun QuickExpenseForm(
     modifier: Modifier = Modifier
 ) {
     val focusManager = LocalFocusManager.current
+    val isDark = MaterialTheme.colorScheme.background.red < 0.5f
+
+    val cardBg = if (isDark) Color(0xFF161F30) else Color(0xFFFFFFFF)
+    val cardBorder = if (isDark) Color.White.copy(alpha = 0.08f) else Color(0xFFBACAC1).copy(alpha = 0.35f)
+    val inputBg = if (isDark) Color(0xFF1E293B) else Color(0xFFFFFFFF)
 
     Box(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(20.dp))
-            .background(DarkSurfaceCard)
-            .border(1.dp, DarkBorderHairline, RoundedCornerShape(20.dp))
+            .background(cardBg)
+            .border(1.dp, cardBorder, RoundedCornerShape(20.dp))
             .padding(18.dp)
     ) {
         Column {
+            // Header Row
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(28.dp)
-                        .clip(CircleShape)
-                        .background(PixMint.copy(alpha = 0.2f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Bolt,
-                        contentDescription = null,
-                        tint = PixMint,
-                        modifier = Modifier.size(16.dp)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(StitchPrimaryContainer.copy(alpha = 0.2f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Bolt,
+                            contentDescription = null,
+                            tint = if (isDark) StitchPrimaryContainer else StitchPrimary,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Novo Gasto Rápido",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.Bold
                     )
                 }
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Novo Gasto Rápido",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = TextPrimaryDark,
-                    fontWeight = FontWeight.Bold
-                )
+
+                // Badge Pix Instantâneo
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(if (isDark) Color(0xFF1E293B) else Color(0xFFEAEDFF))
+                        .padding(horizontal = 8.dp, vertical = 3.dp)
+                ) {
+                    Text(
+                        text = "Pix Instantâneo",
+                        fontSize = 11.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            // Campo 1: Descrição
+            // Campo 1: Descrição do Gasto
+            Text(
+                text = "Descrição do gasto",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+
             OutlinedTextField(
                 value = description,
                 onValueChange = onDescriptionChange,
-                placeholder = { Text("Descrição (ex: Açaí, Pastel, Uber)", color = TextSecondaryDark) },
+                placeholder = {
+                    Text("Ex: Café, Açaí, Uber...", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f))
+                },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.EditNote,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                },
                 singleLine = true,
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = PixMint,
-                    unfocusedBorderColor = DarkBorderHairline,
-                    focusedContainerColor = DarkSurfaceInput,
-                    unfocusedContainerColor = DarkSurfaceInput,
-                    focusedTextColor = TextPrimaryDark,
-                    unfocusedTextColor = TextPrimaryDark
+                    focusedBorderColor = StitchPrimaryContainer,
+                    unfocusedBorderColor = cardBorder,
+                    focusedContainerColor = inputBg,
+                    unfocusedContainerColor = inputBg,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                 ),
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Next
-                )
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
             )
 
             Spacer(modifier = Modifier.height(10.dp))
 
             // Campo 2: Valor R$
+            Text(
+                text = "Valor R$",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+
             OutlinedTextField(
                 value = amount,
                 onValueChange = onAmountChange,
-                placeholder = { Text("Valor (ex: 12,50)", color = TextSecondaryDark) },
-                prefix = { Text("R$ ", color = PixMint, fontWeight = FontWeight.Bold) },
+                placeholder = {
+                    Text("0,00", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f))
+                },
+                leadingIcon = {
+                    Text(
+                        text = "R$",
+                        fontWeight = FontWeight.ExtraBold,
+                        color = if (isDark) StitchPrimaryContainer else StitchPrimary,
+                        fontSize = 15.sp,
+                        modifier = Modifier.padding(start = 12.dp)
+                    )
+                },
                 singleLine = true,
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = PixMint,
-                    unfocusedBorderColor = DarkBorderHairline,
-                    focusedContainerColor = DarkSurfaceInput,
-                    unfocusedContainerColor = DarkSurfaceInput,
-                    focusedTextColor = TextPrimaryDark,
-                    unfocusedTextColor = TextPrimaryDark
+                    focusedBorderColor = StitchPrimaryContainer,
+                    unfocusedBorderColor = cardBorder,
+                    focusedContainerColor = inputBg,
+                    unfocusedContainerColor = inputBg,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                 ),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Decimal,
@@ -157,32 +210,48 @@ fun QuickExpenseForm(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Chips de Categoria
+            // Category Chips (Stitch Style)
+            Text(
+                text = "Categoria",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(6.dp))
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                ExpenseCategory.values().forEach { cat ->
+                listOf(
+                    ExpenseCategory.FOOD,
+                    ExpenseCategory.TRANSPORT,
+                    ExpenseCategory.LEISURE,
+                    ExpenseCategory.SERVICES,
+                    ExpenseCategory.EDUCATION
+                ).forEach { cat ->
                     val isSelected = cat == selectedCategory
+                    val chipBg = if (isSelected) {
+                        StitchPrimary
+                    } else {
+                        if (isDark) Color(0xFF1E293B) else Color(0xFFFFFFFF)
+                    }
+                    val chipText = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
+                    val chipBorder = if (isSelected) StitchPrimary else cardBorder
+
                     Box(
                         modifier = Modifier
                             .clip(CircleShape)
-                            .background(
-                                if (isSelected) PixMint else DarkSurfaceInput
-                            )
-                            .border(
-                                width = 1.dp,
-                                color = if (isSelected) PixMint else DarkBorderHairline,
-                                shape = CircleShape
-                            )
+                            .background(chipBg)
+                            .border(1.dp, chipBorder, CircleShape)
                             .clickable { onCategorySelect(cat) }
-                            .padding(horizontal = 12.dp, vertical = 6.dp)
+                            .padding(horizontal = 14.dp, vertical = 7.dp)
                     ) {
                         Text(
                             text = cat.displayName,
-                            color = if (isSelected) DarkBackground else TextSecondaryDark,
+                            color = chipText,
                             fontSize = 12.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
                         )
@@ -190,7 +259,7 @@ fun QuickExpenseForm(
                 }
             }
 
-            // Mensagem de Erro / Validação
+            // Error validation banner
             if (errorMessage != null) {
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
@@ -219,7 +288,7 @@ fun QuickExpenseForm(
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            // Botão Adicionar
+            // CTA Button (Stitch Mint Style)
             Button(
                 onClick = {
                     focusManager.clearFocus()
@@ -227,23 +296,23 @@ fun QuickExpenseForm(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(50.dp),
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = PixMint,
-                    contentColor = DarkBackground
+                    containerColor = StitchPrimaryContainer,
+                    contentColor = Color(0xFF002116)
                 )
             ) {
                 Icon(
-                    imageVector = Icons.Default.Add,
+                    imageVector = Icons.Default.AddCircle,
                     contentDescription = null,
-                    modifier = Modifier.size(18.dp)
+                    modifier = Modifier.size(20.dp)
                 )
-                Spacer(modifier = Modifier.width(6.dp))
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "Adicionar Gasto",
                     fontWeight = FontWeight.ExtraBold,
-                    fontSize = 14.sp
+                    fontSize = 15.sp
                 )
             }
         }
