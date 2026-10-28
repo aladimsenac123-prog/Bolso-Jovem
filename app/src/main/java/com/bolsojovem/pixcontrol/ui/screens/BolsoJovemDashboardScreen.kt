@@ -118,40 +118,106 @@ fun BolsoJovemDashboardScreen(
 
             // 3. Cabeçalho da Seção Extrato de Hoje
             item(key = "feed_header") {
-                Row(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp, bottom = 4.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                        .padding(top = 8.dp, bottom = 4.dp)
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = "Extrato de Hoje",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = TextPrimaryDark,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.size(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "Extrato de Hoje",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = TextPrimaryDark,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.size(8.dp))
+                            Box(
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .background(PixMint.copy(alpha = 0.2f))
+                                    .padding(horizontal = 8.dp, vertical = 2.dp)
+                            ) {
+                                Text(
+                                    text = "${filteredTransactions.size} itens",
+                                    color = PixMint,
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    // Chips de Filtro Rápido
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        // Opção "Todas"
+                        val isAllSelected = filterCategory == null
                         Box(
                             modifier = Modifier
                                 .clip(CircleShape)
-                                .background(PixMint.copy(alpha = 0.2f))
-                                .padding(horizontal = 8.dp, vertical = 2.dp)
+                                .background(if (isAllSelected) PixMint else DarkSurfaceInput)
+                                .border(
+                                    width = 1.dp,
+                                    color = if (isAllSelected) PixMint else DarkBorderHairline,
+                                    shape = CircleShape
+                                )
+                                .clickable { filterCategory = null }
+                                .padding(horizontal = 12.dp, vertical = 6.dp)
                         ) {
                             Text(
-                                text = "${uiState.transactions.size} itens",
-                                color = PixMint,
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Bold
+                                text = "Todas",
+                                color = if (isAllSelected) DarkBackground else TextSecondaryDark,
+                                fontSize = 12.sp,
+                                fontWeight = if (isAllSelected) FontWeight.Bold else FontWeight.Medium
                             )
+                        }
+
+                        // Categorias dinâmicas
+                        listOf(
+                            ExpenseCategory.FOOD,
+                            ExpenseCategory.TRANSPORT,
+                            ExpenseCategory.EDUCATION,
+                            ExpenseCategory.LEISURE,
+                            ExpenseCategory.PIX_TRANSFER
+                        ).forEach { cat ->
+                            val isSelected = filterCategory == cat
+                            Box(
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .background(if (isSelected) PixMint else DarkSurfaceInput)
+                                    .border(
+                                        width = 1.dp,
+                                        color = if (isSelected) PixMint else DarkBorderHairline,
+                                        shape = CircleShape
+                                    )
+                                    .clickable { filterCategory = if (isSelected) null else cat }
+                                    .padding(horizontal = 12.dp, vertical = 6.dp)
+                            ) {
+                                Text(
+                                    text = cat.displayName,
+                                    color = if (isSelected) DarkBackground else TextSecondaryDark,
+                                    fontSize = 12.sp,
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                                )
+                            }
                         }
                     }
                 }
             }
 
             // 4. Lista de Transações Cadastradas
-            if (uiState.transactions.isEmpty()) {
+            if (filteredTransactions.isEmpty()) {
                 item(key = "empty_state") {
                     Box(
                         modifier = Modifier
@@ -160,7 +226,7 @@ fun BolsoJovemDashboardScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Nenhum gasto cadastrado hoje. Você está economizando!",
+                            text = if (filterCategory != null) "Nenhum gasto nesta categoria." else "Nenhum gasto cadastrado hoje. Você está economizando!",
                             style = MaterialTheme.typography.bodyMedium,
                             color = TextSecondaryDark
                         )
@@ -168,7 +234,7 @@ fun BolsoJovemDashboardScreen(
                 }
             } else {
                 items(
-                    items = uiState.transactions,
+                    items = filteredTransactions,
                     key = { it.id }
                 ) { tx ->
                     TransactionItemCard(
